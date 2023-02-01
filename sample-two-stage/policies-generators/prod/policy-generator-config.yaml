@@ -1,0 +1,17 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: test-prod-pol-generator
+policyDefaults:
+  namespace: policy-test
+  remediationAction: enforce
+  placement:
+    name: placement-prod-test
+    clusterSelectors:
+      environment: prod
+placementBindingDefaults:
+  name: "binding-prod-test"
+policies:
+  - name: conf-pol-prod
+    manifests:
+      - path: customized-config-manifest.yaml

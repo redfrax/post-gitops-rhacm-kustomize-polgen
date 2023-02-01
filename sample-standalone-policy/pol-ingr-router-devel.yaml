@@ -1,0 +1,62 @@
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-devel-test
+  namespace: policy-test
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+    - key: environment
+      operator: In
+      values:
+      - devel
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-pol-ingr-router-devel
+  namespace: policy-test
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: placement-devel-test
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: pol-ingr-router-devel
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: pol-ingr-router-devel
+  namespace: policy-test
+spec:
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: pol-ingr-router-devel
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operator.openshift.io/v1
+            kind: IngressController
+            metadata:
+              name: default
+              namespace: openshift-ingress-operator
+            spec:
+              replicas: 3
+              tuningOptions:
+                threadCount: 4
+        remediationAction: enforce
+        severity: low

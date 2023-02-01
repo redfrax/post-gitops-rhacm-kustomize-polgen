@@ -1,0 +1,26 @@
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-test
+  namespace: policy-test
+spec:
+  clusterSelector:
+    matchExpressions:
+    - key: environment
+      operator: In
+      values:
+      - devel
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-pol-ingr-router
+  namespace: policy-test
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: placement-test-devel
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: pol-ingr-router-devel

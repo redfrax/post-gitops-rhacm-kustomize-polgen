@@ -1,0 +1,17 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: test-pol-generator
+policyDefaults:
+  namespace: policy-test
+  remediationAction: enforce
+  placement:
+    name: placement-test
+    clusterSelectors:
+      environment: ""
+placementBindingDefaults:
+  name: "binding-test"
+policies:
+  - name: pol-ingr-router
+    manifests:
+      - path: ingress-router-conf-payload.yaml
